@@ -4,36 +4,50 @@ Plugin Name: LearnPress Quiz Bulk Upload
 Plugin URI: 
 Description: Bulk upload quizzes to LearnPress from Excel files
 Version: 1.0
-Author: Adam Osama
+Author: Adam Osama Hammad
 Author URI: 
 License: GPLv2 or later
 Text Domain: learnpress-quiz-bulk-upload
 */
 
-// Exit if accessed directly
-if (!defined('ABSPATH')) {
-    exit;
-}
+defined('ABSPATH') || exit;
 
 // Check if LearnPress is active
-if (!in_array('learnpress/learnpress.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-    function lpqbu_admin_notice() {
-        ?>
-        <div class="notice notice-error is-dismissible">
-            <p><?php _e('LearnPress Quiz Bulk Upload requires LearnPress to be installed and active!', 'learnpress-quiz-bulk-upload'); ?></p>
-        </div>
-        <?php
+register_activation_hook(__FILE__, 'lpqbu_check_dependencies');
+function lpqbu_check_dependencies() {
+    if (!is_plugin_active('learnpress/learnpress.php')) {
+        deactivate_plugins(plugin_basename(__FILE__));
+        wp_die(
+            __('This plugin requires LearnPress to be installed and active.', 'learnpress-quiz-bulk-upload'),
+            __('Plugin dependency error', 'learnpress-quiz-bulk-upload'),
+            array('back_link' => true)
+        );
     }
-    add_action('admin_notices', 'lpqbu_admin_notice');
-    return;
 }
 
-// Include necessary files
-require_once plugin_dir_path(__FILE__) . 'includes/admin.php';
-require_once plugin_dir_path(__FILE__) . 'includes/processor.php';
-
-// Load text domain
-function lpqbu_load_textdomain() {
-    load_plugin_textdomain('learnpress-quiz-bulk-upload', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+// Load plugin files
+add_action('plugins_loaded', 'lpqbu_init_plugin');
+function lpqbu_init_plugin() {
+    if (!class_exists('LP_Addon')) return;
+    
+    require_once plugin_dir_path(__FILE__) . 'includes/admin.php';
+    require_once plugin_dir_path(__FILE__) . 'includes/processor.php';
+    require_once plugin_dir_path(__FILE__) . 'includes/documentation.php';
+    
+    load_plugin_textdomain(
+        'learnpress-quiz-bulk-upload',
+        false,
+        dirname(plugin_basename(__FILE__)) . '/languages/'
+    );
+    
+    // Add action links
+    add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'lpqbu_add_action_links');
 }
-add_action('plugins_loaded', 'lpqbu_load_textdomain');
+
+function lpqbu_add_action_links($links) {
+    $new_links = array(
+        '<a href="' . admin_url('admin.php?page=learnpress-quiz-bulk-upload') . '">' . __('Upload Questions', 'learnpress-quiz-bulk-upload') . '</a>',
+        '<a href="' . admin_url('admin.php?page=learnpress-quiz-bulk-docs') . '">' . __('Documentation', 'learnpress-quiz-bulk-upload') . '</a>'
+    );
+    return array_merge($links, $new_links);
+}
