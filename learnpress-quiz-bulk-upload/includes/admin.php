@@ -2,13 +2,21 @@
 defined('ABSPATH') || exit;
 
 // Add admin menu
-add_action('admin_menu', 'lpqbu_add_admin_menu');
+add_action('admin_init', 'lpqbu_add_admin_menu', 100);
 function lpqbu_add_admin_menu() {
+    if (!defined('LP_QUIZ_CPT')) {
+        error_log('LearnPress Quiz Bulk Upload: LP_QUIZ_CPT not defined.');
+        return;
+    }
+    
+
+
+    // In includes/admin.php, update the capability check:
     add_submenu_page(
         'learn_press',
         __('Bulk Quiz Upload', 'learnpress-quiz-bulk-upload'),
         __('Bulk Quiz Upload', 'learnpress-quiz-bulk-upload'),
-        'manage_options',
+        'manage_options', // Changed from 'edit_others_posts'
         'learnpress-quiz-bulk-upload',
         'lpqbu_admin_page'
     );
@@ -16,8 +24,12 @@ function lpqbu_add_admin_menu() {
 
 // Admin page content
 function lpqbu_admin_page() {
-    if (!current_user_can('manage_options')) {
+    if (!current_user_can('edit_others_posts')) {
         wp_die(__('You do not have sufficient permissions to access this page.', 'learnpress-quiz-bulk-upload'));
+    }
+    
+    if (!defined('LP_QUIZ_CPT')) {
+        wp_die(__('LearnPress is not properly loaded. Please ensure LearnPress is active.', 'learnpress-quiz-bulk-upload'));
     }
     
     // Process upload if form submitted
@@ -43,7 +55,7 @@ function lpqbu_admin_page() {
                             <label for="quiz_file"><?php esc_html_e('Excel File', 'learnpress-quiz-bulk-upload'); ?></label>
                         </th>
                         <td>
-                            <input type="file" name="quiz_file" id="quiz_file" required>
+                            <input type="file" name="quiz_file" id="quiz_file" accept=".xlsx,.xls" required>
                             <p class="description"><?php esc_html_e('Upload your Excel file (.xlsx, .xls)', 'learnpress-quiz-bulk-upload'); ?></p>
                         </td>
                     </tr>

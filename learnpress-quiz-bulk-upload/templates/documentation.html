@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnPress Quiz Bulk Upload Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 30px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #eee;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 20px;
+        }
+        p, li {
+            color: #555;
+            font-size: 15px;
+        }
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .card {
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .note {
+            background-color: #e7f4ff;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .warning {
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #2980b9;
+            color: #fff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LearnPress Quiz Bulk Upload Documentation</h1>
+
+        <div class="card">
+            <h2>Plugin Overview</h2>
+            <p>This plugin allows you to bulk upload multiple choice questions to LearnPress quizzes using Excel files. It saves time when you need to add many questions at once.</p>
+        </div>
+
+        <div class="card">
+            <h2>Installation</h2>
+            <ol>
+                <li>Upload the plugin folder to your WordPress plugins directory (<code>/wp-content/plugins/</code>)</li>
+                <li>Activate the plugin through the 'Plugins' menu in WordPress</li>
+                <li>Install PhpSpreadsheet (see instructions below)</li>
+                <li>The plugin will appear under LearnPress in your admin menu</li>
+            </ol>
+            
+            <div class="warning">
+                <h3>Important: PhpSpreadsheet Requirement</h3>
+                <p>This plugin requires the PhpSpreadsheet library to process Excel files. You have two options:</p>
+                <ol>
+                    <li><strong>Recommended:</strong> Install via Composer in your WordPress root directory:
+                        <code>composer require phpoffice/phpspreadsheet</code>
+                    </li>
+                    <li>Or manually download from <a href="https://github.com/PHPOffice/PhpSpreadsheet" target="_blank">GitHub</a> and place in the plugin's vendor folder</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>How to Use</h2>
+            <ol>
+                <li>Prepare your questions in Excel using the template format</li>
+                <li>Go to LearnPress → Bulk Quiz Upload in WordPress admin</li>
+                <li>Select your Excel file and the target quiz</li>
+                <li>Click "Upload Questions" to process the file</li>
+                <li>Review the results and any error messages</li>
+            </ol>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=learnpress-quiz-bulk-upload')); ?>" class="button">Go to Upload Page</a>
+        </div>
+
+        <div class="card">
+            <h2>Excel File Format</h2>
+            <p>Your Excel file must follow this exact format (columns in this order):</p>
+            
+            <table>
+                <tr>
+                    <th>Column</th>
+                    <th>Content</th>
+                    <th>Required</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Question text</td>
+                    <td>Yes</td>
+                    <td>What is the capital of France?</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Option A</td>
+                    <td>Yes</td>
+                    <td>London</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Option B</td>
+                    <td>Yes</td>
+                    <td>Paris</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Option C</td>
+                    <td>Yes</td>
+                    <td>Berlin</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Option D</td>
+                    <td>Yes</td>
+                    <td>Madrid</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Correct answer (A, B, C, or D)</td>
+                    <td>Yes</td>
+                    <td>B</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Marks/points</td>
+                    <td>Yes</td>
+                    <td>1</td>
+                </tr>
+            </table>
+            
+            <div class="note">
+                <p><strong>Note:</strong> The first row of your Excel file should contain data (not headers). The plugin will skip any completely empty rows.</p>
+            </div>
+            
+            <a href="<?php echo esc_url(plugin_dir_url(__FILE__) . '../templates/quiz-template.xlsx'); ?>" class="button">Download Template</a>
+        </div>
+
+        <div class="card">
+            <h2>Troubleshooting</h2>
+            <h3>Common Issues</h3>
+            <ul>
+                <li><strong>Permission errors:</strong> Make sure your WordPress user has administrator privileges</li>
+                <li><strong>File upload issues:</strong> Check your server's PHP upload limits</li>
+                <li><strong>Missing columns:</strong> Ensure your Excel file has exactly 7 columns</li>
+                <li><strong>Invalid answers:</strong> The answer column must contain only A, B, C, or D</li>
+            </ul>
+            
+            <h3>Error Messages</h3>
+            <ul>
+                <li><strong>"LearnPress is not properly loaded":</strong> Make sure LearnPress is installed and activated</li>
+                <li><strong>"PhpSpreadsheet library missing":</strong> Follow the installation instructions above</li>
+                <li><strong>"Sorry, you are not allowed to access this page":</strong> Check your user permissions</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

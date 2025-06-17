@@ -6,6 +6,11 @@ function lpqbu_process_excel_file($file_path, $quiz_id) {
         return array('success' => false, 'message' => __('File not found', 'learnpress-quiz-bulk-upload'));
     }
     
+    if (!defined('LP_QUESTION_CPT')) {
+        error_log('LearnPress Quiz Bulk Upload: LP_QUESTION_CPT not defined.');
+        return array('success' => false, 'message' => __('LearnPress is not properly loaded.', 'learnpress-quiz-bulk-upload'));
+    }
+    
     // Load PhpSpreadsheet
     if (!class_exists('PhpOffice\PhpSpreadsheet\IOFactory')) {
         $vendor_path = plugin_dir_path(__FILE__) . '../../vendor/autoload.php';
